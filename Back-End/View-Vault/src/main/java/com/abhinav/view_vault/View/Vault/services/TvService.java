@@ -1,33 +1,25 @@
 package com.abhinav.view_vault.View.Vault.services;
 
-import com.abhinav.view_vault.View.Vault.dto.MovieDto;
-import com.abhinav.view_vault.View.Vault.dto.MovieInListDto;
-import com.abhinav.view_vault.View.Vault.entities.MovieEntity;
-import com.abhinav.view_vault.View.Vault.repositories.MovieRepository;
+import com.abhinav.view_vault.View.Vault.dto.TvInListDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class MovieService {
+public class TvService {
 
-    private final MovieRepository movieRepository;
-    private final ModelMapper modelMapper;
     private final TmdbService tmdbService;
     private final ObjectMapper objectMapper;
 
-    public List<MovieDto> listAllMovies(){
-        List<MovieEntity> movieEntitiesList = movieRepository.findAll();
-        return movieEntitiesList.stream().map(movie->modelMapper.map(movie, MovieDto.class)).toList();
-    }
-
-    public Map<String, Object> getMoviesByCategory(String category, String timeWindow, Integer page) {
-        String body = tmdbService.getItemsByCategory("movie", category, timeWindow, page);
+    public Map<String, Object> getTvByCategory(String category, String timeWindow, Integer page) {
+        String body = tmdbService.getItemsByCategory("tv", category, timeWindow, page);
         Map<String, Object> result = new HashMap<>();
 
         if (body == null || body.isEmpty()) {
@@ -43,11 +35,11 @@ public class MovieService {
             int currentPage = root.path("page").asInt(page != null ? page : 1);
             int totalPages = root.path("total_pages").asInt(0);
 
-            List<MovieInListDto> movieList = Arrays.asList(
-                    objectMapper.treeToValue(resultsNode, MovieInListDto[].class)
+            List<TvInListDto> tvList = Arrays.asList(
+                    objectMapper.treeToValue(resultsNode, TvInListDto[].class)
             );
 
-            result.put("results", movieList);
+            result.put("results", tvList);
             result.put("page", currentPage);
             result.put("total_pages", totalPages);
             return result;
@@ -58,5 +50,10 @@ public class MovieService {
             result.put("total_pages", 0);
             return result;
         }
+    }
+
+    // Overloaded method for backward compatibility
+    public Map<String, Object> getTvByCategory(String category, String timeWindow) {
+        return getTvByCategory(category, timeWindow, null);
     }
 }

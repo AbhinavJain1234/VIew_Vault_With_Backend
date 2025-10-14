@@ -1,8 +1,7 @@
 package com.abhinav.view_vault.View.Vault.controllers;
 
-import com.abhinav.view_vault.View.Vault.dto.MovieDto;
-import com.abhinav.view_vault.View.Vault.dto.MovieInListDto;
-import com.abhinav.view_vault.View.Vault.services.MovieService;
+import com.abhinav.view_vault.View.Vault.dto.TvInListDto;
+import com.abhinav.view_vault.View.Vault.services.TvService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,21 +15,16 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/movies")
-public class MovieController {
+@RequestMapping("/tv")
+public class TvController {
 
-    private final MovieService movieService;
-
-    @GetMapping
-    public ResponseEntity<List<MovieDto>> getMovies(){
-        return ResponseEntity.ok(movieService.listAllMovies());
-    }
+    private final TvService tvService;
 
     @GetMapping("/{category}")
-    public ResponseEntity<Map<String, Object>> getMoviesByCategory(
+    public ResponseEntity<Map<String, Object>> getTvByCategory(
             @PathVariable String category,
             @RequestParam(required = false, defaultValue = "day") String timeWindow,
-            @RequestParam(required = false) Integer page) {
-        return ResponseEntity.ok(movieService.getMoviesByCategory(category, timeWindow, page));
+            @RequestParam(required = false,defaultValue = "1") Integer page) {
+        return ResponseEntity.ok(tvService.getTvByCategory(category, timeWindow, page));
     }
 }
