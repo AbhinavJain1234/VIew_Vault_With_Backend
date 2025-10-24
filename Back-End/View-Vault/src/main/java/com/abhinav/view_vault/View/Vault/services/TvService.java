@@ -1,5 +1,7 @@
 package com.abhinav.view_vault.View.Vault.services;
 
+import com.abhinav.view_vault.View.Vault.dto.MovieDetailDto;
+import com.abhinav.view_vault.View.Vault.dto.TvDetailDto;
 import com.abhinav.view_vault.View.Vault.dto.TvInListDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,8 +54,18 @@ public class TvService {
         }
     }
 
-    // Overloaded method for backward compatibility
-    public Map<String, Object> getTvByCategory(String category, String timeWindow) {
-        return getTvByCategory(category, timeWindow, null);
+    public TvDetailDto getMovieByTmdbId(String tmdbId) {
+        String body = tmdbService.getItemDetailsByTmdbId("tv", tmdbId);
+        Map<String, String> result = new HashMap<>();
+        if(body==null){
+            return null;
+        }
+        try {
+            JsonNode root = objectMapper.readTree(body);
+            return objectMapper.treeToValue(root, TvDetailDto.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

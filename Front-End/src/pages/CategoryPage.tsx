@@ -184,7 +184,12 @@ export default function CategoryPage() {
             <div className="row g-3">
               {allItems.map(item => (
                 <div key={`item-${item.id}`} className="col-6 col-sm-4 col-md-3 col-lg-2">
-                  <MediaCard item={item} />
+                  <MediaCard 
+                    item={item}
+                    onMoreDetails={(selectedItem, path) => {
+                      navigate(path, { state: { item: selectedItem } })
+                    }}
+                  />
                 </div>
               ))}
             </div>

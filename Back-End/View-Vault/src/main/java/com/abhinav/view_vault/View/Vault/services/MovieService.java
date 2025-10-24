@@ -1,5 +1,6 @@
 package com.abhinav.view_vault.View.Vault.services;
 
+import com.abhinav.view_vault.View.Vault.dto.MovieDetailDto;
 import com.abhinav.view_vault.View.Vault.dto.MovieDto;
 import com.abhinav.view_vault.View.Vault.dto.MovieInListDto;
 import com.abhinav.view_vault.View.Vault.entities.MovieEntity;
@@ -57,6 +58,21 @@ public class MovieService {
             result.put("page", page != null ? page : 1);
             result.put("total_pages", 0);
             return result;
+        }
+    }
+
+    public MovieDetailDto getMovieByTmdbId(String tmdbId) {
+        String body = tmdbService.getItemDetailsByTmdbId("movie", tmdbId);
+        Map<String, String> result = new HashMap<>();
+        if(body==null){
+            return null;
+        }
+        try {
+            JsonNode root = objectMapper.readTree(body);
+            return objectMapper.treeToValue(root, MovieDetailDto.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

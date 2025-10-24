@@ -1,6 +1,5 @@
 package com.abhinav.view_vault.View.Vault.services;
 
-import com.abhinav.view_vault.View.Vault.Configurations.RestTemplateConfig;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -12,13 +11,15 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class TmdbService {
 
     private final RestTemplate restTemplate;
-    private final Dotenv dotenv = Dotenv.configure().load();
+    private final Dotenv dotenv; // injected from DotenvConfig
+    private final ConcurrentHashMap<String, String> cache = new ConcurrentHashMap<>();
 
     // Valid categories for movies
     private static final List<String> MOVIE_CATEGORIES = Arrays.asList(
@@ -68,25 +69,16 @@ public class TmdbService {
         if (page != null && page > 0) {
             url += "&page=" + page;
         }
+
+        if (cache.containsKey(url)) {
+            return cache.get(url);
+        }
         System.out.println(url);
-
-//        String url="https://api.themoviedb.org/3/trending/movie/day";
-        return makeApiCall(url, HttpMethod.GET, null);
-    }
-
-    // Overloaded method for backward compatibility
-    public String getItemsByCategory(String mediaType, String category, String timeWindow) {
-        return getItemsByCategory(mediaType, category, timeWindow, null);
-    }
-
-    // Keep for backward compatibility
-    public String getTrendingMovies() {
-        return getItemsByCategory("movie", "trending", "day");
-    }
-
-    // Keep for backward compatibility
-    public String getMoviesByCategory(String category, String timeWindow) {
-        return getItemsByCategory("movie", category, timeWindow);
+        String response = makeApiCall(url, HttpMethod.GET, null);
+        if (response != null) {
+            cache.put(url, response);
+        }
+        return response;
     }
 
     private String makeApiCall(String url, HttpMethod method, Object body) {
@@ -101,5 +93,23 @@ public class TmdbService {
             System.err.println("Error during API call: " + e.getMessage());
             return null;
         }
+    }
+
+    public String getItemDetailsByTmdbId(String mediaType, String tmdbId) {
+        if (!"movie".equalsIgnoreCase(mediaType) && !"tv".equalsIgnoreCase(mediaType)) {
+            System.err.println("Invalid media type: " + mediaType + ". Must be 'movie' or 'tv'");
+            return null;
+        }
+        String url;
+        url=getBaseUrl()+"/"+mediaType.toLowerCase()+"/"+tmdbId+"?language=en-US";
+        if (cache.containsKey(url)) {
+            return cache.get(url);
+        }
+        System.out.println(url);
+        String response = makeApiCall(url, HttpMethod.GET, null);
+        if (response != null) {
+            cache.put(url, response);
+        }
+        return response;
     }
 }

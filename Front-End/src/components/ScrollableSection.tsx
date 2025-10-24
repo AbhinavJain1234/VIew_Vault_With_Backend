@@ -6,12 +6,14 @@ interface ScrollableSectionProps {
   title: string
   items: MediaItem[]
   onSeeAll?: () => void
+  onMoreDetails?: (item: MediaItem, path?: string) => void
 }
 
 export const ScrollableSection: React.FC<ScrollableSectionProps> = ({
   title,
   items,
-  onSeeAll
+  onSeeAll,
+  onMoreDetails
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [scrollState, setScrollState] = useState({ atStart: true, atEnd: false })
@@ -61,7 +63,11 @@ export const ScrollableSection: React.FC<ScrollableSectionProps> = ({
         )}
         <div className="h-scroller" ref={scrollRef}>
           {items.map(item => (
-            <MediaCard key={item.id} item={item} />
+            <MediaCard 
+              key={item.id} 
+              item={item}
+              onMoreDetails={onMoreDetails}
+            />
           ))}
         </div>
         {items.length > 0 && !scrollState.atEnd && (

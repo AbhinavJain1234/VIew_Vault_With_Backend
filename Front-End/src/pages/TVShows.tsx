@@ -87,29 +87,34 @@ export default function TVShows() {
         title="Trending TV Shows"
         items={trending}
         onSeeAll={() => navigate('/tv/trending')}
+        onMoreDetails={(item, path) => navigate(path || `/tv-details/${item.id}`, { state: { item } })}
       />
       <ScrollableSection
         title="Popular TV Shows"
         items={popular}
         onSeeAll={() => navigate('/tv/popular')}
+        onMoreDetails={(item, path) => navigate(path || `/tv-details/${item.id}`, { state: { item } })}
       />
 
       <ScrollableSection
         title="Top Rated TV Shows"
         items={topRated}
         onSeeAll={() => navigate('/tv/top_rated')}
+        onMoreDetails={(item, path) => navigate(path || `/tv-details/${item.id}`, { state: { item } })}
       />
 
       <ScrollableSection
         title="Airing Today"
         items={airingToday}
         onSeeAll={() => navigate('/tv/airing_today')}
+        onMoreDetails={(item, path) => navigate(path || `/tv-details/${item.id}`, { state: { item } })}
       />
 
       <ScrollableSection
         title="On The Air"
         items={onTheAir}
         onSeeAll={() => navigate('/tv/on_the_air')}
+        onMoreDetails={(item, path) => navigate(path || `/tv-details/${item.id}`, { state: { item } })}
       />
     </div>
   )

@@ -1,7 +1,7 @@
 package com.abhinav.view_vault.View.Vault.controllers;
 
+import com.abhinav.view_vault.View.Vault.dto.MovieDetailDto;
 import com.abhinav.view_vault.View.Vault.dto.MovieDto;
-import com.abhinav.view_vault.View.Vault.dto.MovieInListDto;
 import com.abhinav.view_vault.View.Vault.services.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +26,17 @@ public class MovieController {
         return ResponseEntity.ok(movieService.listAllMovies());
     }
 
-    @GetMapping("/{category}")
+    @GetMapping("/category/{category}")
     public ResponseEntity<Map<String, Object>> getMoviesByCategory(
             @PathVariable String category,
             @RequestParam(required = false, defaultValue = "day") String timeWindow,
             @RequestParam(required = false) Integer page) {
         return ResponseEntity.ok(movieService.getMoviesByCategory(category, timeWindow, page));
+    }
+
+    @GetMapping("/{tmdb_id}")
+    public ResponseEntity<MovieDetailDto> getMovieByTmdbId(
+            @PathVariable String tmdb_id) {
+        return ResponseEntity.ok(movieService.getMovieByTmdbId(tmdb_id));
     }
 }

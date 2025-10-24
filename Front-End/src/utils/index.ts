@@ -9,7 +9,8 @@ export const mapMovieItem = (data: any): MovieItem => ({
   vote_average: data.vote_average ? Number(data.vote_average.toFixed(1)) : undefined,
   release_date: data.release_date,
   overview: data.overview || '',
-  adult: data.adult || false
+  adult: data.adult || false,
+  genre_ids: data.genre_ids || []
 })
 
 export const mapTVItem = (data: any): TVItem => ({
@@ -19,7 +20,8 @@ export const mapTVItem = (data: any): TVItem => ({
   backdrop_path: data.backdrop_path,
   vote_average: data.vote_average ? Number(data.vote_average.toFixed(1)) : undefined,
   first_air_date: data.first_air_date,
-  overview: data.overview || ''
+  overview: data.overview || '',
+  genre_ids: data.genre_ids || []
 })
 
 export const getImageUrl = (
@@ -51,6 +53,7 @@ export const fetchWithErrorHandling = async <T>(
   mapper: (data: any) => T
 ): Promise<T[]> => {
   try {
+    console.log(`Fetching data from ${endpoint}...`)
     const response = await fetch(endpoint)
     
     if (!response.ok) {

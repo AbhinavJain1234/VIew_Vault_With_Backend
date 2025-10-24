@@ -7,6 +7,18 @@ export default defineConfig({
     chunkSizeWarningLimit: 1600
   },
   server: {
+    //
+    host: '0.0.0.0',
+    port: 5173,
+    cors: true,
+    strictPort: true,
+    allowedHosts: [
+      'localhost',
+      '127.0.0.1',
+      '.ngrok-free.dev',
+      '.loca.lt'
+    ],
+    //
     proxy: {
       '/movies': {
         target: 'http://localhost:8080',

@@ -1,3 +1,8 @@
+export interface Genre {
+  id: number
+  name: string
+}
+
 export interface MediaItem {
   id: number
   title?: string
@@ -9,6 +14,19 @@ export interface MediaItem {
   first_air_date?: string
   adult?: boolean
   overview?: string
+  genre_ids?: number[]
+  genres?: Genre[]
+  runtime?: number
+  revenue?: number
+  budget?: number
+  status?: string
+  imdb_id?: string
+  homepage?: string
+  tagline?: string
+  popularity?: number
+  vote_count?: number
+  origin_country?: string[]
+  original_language?: string
 }
 
 export interface MovieItem extends MediaItem {

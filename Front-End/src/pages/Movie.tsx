@@ -83,23 +83,27 @@ export default function Movie() {
         title="Trending on ViewVault"
         items={trending}
         onSeeAll={() => navigate('/movies/trending')}
+        onMoreDetails={(item, path) => navigate(path || `/movie-details/${item.id}`, { state: { item } })}
       />
       <ScrollableSection
         title="Popular on ViewVault"
         items={popular}
         onSeeAll={() => navigate('/movies/popular')}
+        onMoreDetails={(item, path) => navigate(path || `/movie-details/${item.id}`, { state: { item } })}
       />
 
       <ScrollableSection
         title="Top Rated"
         items={topRated}
         onSeeAll={() => navigate('/movies/top_rated')}
+        onMoreDetails={(item, path) => navigate(path || `/movie-details/${item.id}`, { state: { item } })}
       />
 
       <ScrollableSection
         title="Now Playing"
         items={nowPlaying}
         onSeeAll={() => navigate('/movies/now_playing')}
+        onMoreDetails={(item, path) => navigate(path || `/movie-details/${item.id}`, { state: { item } })}
       />
     </div>
   )

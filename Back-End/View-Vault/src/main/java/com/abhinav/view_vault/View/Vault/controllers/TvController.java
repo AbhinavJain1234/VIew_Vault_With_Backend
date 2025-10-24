@@ -1,5 +1,7 @@
 package com.abhinav.view_vault.View.Vault.controllers;
 
+import com.abhinav.view_vault.View.Vault.dto.MovieDetailDto;
+import com.abhinav.view_vault.View.Vault.dto.TvDetailDto;
 import com.abhinav.view_vault.View.Vault.dto.TvInListDto;
 import com.abhinav.view_vault.View.Vault.services.TvService;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +22,16 @@ public class TvController {
 
     private final TvService tvService;
 
-    @GetMapping("/{category}")
+    @GetMapping("/category/{category}")
     public ResponseEntity<Map<String, Object>> getTvByCategory(
             @PathVariable String category,
             @RequestParam(required = false, defaultValue = "day") String timeWindow,
             @RequestParam(required = false,defaultValue = "1") Integer page) {
         return ResponseEntity.ok(tvService.getTvByCategory(category, timeWindow, page));
+    }
+    @GetMapping("/{tmdb_id}")
+    public ResponseEntity<TvDetailDto> getMovieByTmdbId(
+            @PathVariable String tmdb_id) {
+        return ResponseEntity.ok(tvService.getMovieByTmdbId(tmdb_id));
     }
 }

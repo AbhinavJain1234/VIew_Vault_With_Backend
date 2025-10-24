@@ -7,6 +7,8 @@ import Movie from './pages/Movie'
 import TVShows from './pages/TVShows'
 import Anime from './pages/Anime'
 import CategoryPage from './pages/CategoryPage'
+import MovieDetailsPage from './pages/MovieDetailsPage'
+import TVDetailsPage from './pages/TVDetailsPage'
 
 export default function App() {
   return (
@@ -21,6 +23,8 @@ export default function App() {
           <Route path="/tv" element={<TVShows />} />
           <Route path="/tv/:category" element={<CategoryPage />} />
           <Route path="/anime" element={<Anime />} />
+          <Route path="/movie-details/:itemId" element={<MovieDetailsPage />} />
+          <Route path="/tv-details/:itemId" element={<TVDetailsPage />} />
         </Routes>
 
         <Footer />
