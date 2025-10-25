@@ -26,7 +26,7 @@ export const mapTVItem = (data: any): TVItem => ({
 
 export const getImageUrl = (
   path: string | undefined,
-  size: keyof typeof IMAGE_SIZES = 'POSTER',
+  size: 'POSTER' | 'BACKDROP' | 'THUMBNAIL' | 'STILL' = 'POSTER',
   fallback: string = '/placeholder.jpg'
 ): string => {
   if (!path) return fallback

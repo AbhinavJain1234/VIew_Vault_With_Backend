@@ -28,7 +28,6 @@ export default function TVDetailsPage() {
   const [item, setItem] = React.useState<TVDetail | null>(null)
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState(false)
-  const [showPlayer, setShowPlayer] = React.useState(false)
 
   React.useEffect(() => {
     const fetchDetails = async () => {
@@ -310,6 +309,7 @@ export default function TVDetailsPage() {
                   {seasons.slice(0, 6).map((season) => (
                     <div
                       key={season.id}
+                      onClick={() => navigate(`/tv/${item.id}/season/${season.season_number}`)}
                       style={{
                         backgroundColor: '#2a2a2a',
                         borderRadius: '8px',
@@ -357,18 +357,8 @@ export default function TVDetailsPage() {
 
             {/* Action Buttons */}
             <div style={{ display: 'flex', gap: '15px', marginTop: '30px', marginBottom: '30px', flexWrap: 'wrap' }}>
-              <button 
-                className="btn btn-light" 
-                onClick={() => setShowPlayer(true)}
-                style={{ padding: '10px 30px', fontSize: '1rem', fontWeight: 'bold' }}
-              >
-                ▶ Watch Now
-              </button>
-              <button className="btn btn-outline-light" style={{ padding: '10px 30px', fontSize: '1rem' }}>
-                + Add to Watchlist
-              </button>
               <button
-                className="btn btn-outline-secondary"
+                className="btn btn-outline-light"
                 onClick={() => navigate(-1)}
                 style={{ padding: '10px 30px', fontSize: '1rem' }}
               >
@@ -378,61 +368,6 @@ export default function TVDetailsPage() {
           </div>
         </div>
       </div>
-
-      {/* Video Player Modal */}
-      {showPlayer && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: '#000',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999
-          }}
-          onClick={() => setShowPlayer(false)}
-        >
-          {/* Close Button */}
-          <button
-            onClick={() => setShowPlayer(false)}
-            style={{
-              position: 'absolute',
-              top: '20px',
-              right: '20px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              color: '#fff',
-              fontSize: '2.5rem',
-              cursor: 'pointer',
-              padding: '0',
-              width: '50px',
-              height: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 10000
-            }}
-          >
-            ✕
-          </button>
-
-          {/* Iframe Embed - Full Screen */}
-          <iframe
-            src={`https://www.vidking.net/embed/tv/${item?.id}`}
-            style={{
-              width: '100%',
-              height: '100%',
-              border: 'none'
-            }}
-            allowFullScreen
-            frameBorder="0"
-          />
-        </div>
-      )}
     </div>
   )
 }

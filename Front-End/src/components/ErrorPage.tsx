@@ -35,8 +35,8 @@ interface ErrorPageProps {
 
 export default function ErrorPage({
   onRetry = () => window.location.reload(),
-  title = "Connection Lost",
-  message = "We're unable to connect to the ViewVault movie database.\nPlease ensure your Spring Boot backend is running on localhost:8080.",
+  title = "Something went wrong",
+  message = "We're unable to load the content right now.\nPlease try again later.",
   showHelp = true
 }: ErrorPageProps) {
   return (
@@ -67,7 +67,7 @@ export default function ErrorPage({
             Retry Connection
           </button>
           {showHelp && (
-            <button className="help-btn" onClick={()=>{alert('Make sure your Spring Boot application is running on localhost:8080\n\nCheck the console for any error messages.')}}>
+            <button className="help-btn" onClick={()=>{alert('Please check your internet connection and try again.\n\nIf the problem persists, the service may be temporarily unavailable.')}}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
                 <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3m0 3h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

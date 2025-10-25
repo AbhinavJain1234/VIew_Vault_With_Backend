@@ -1,8 +1,6 @@
 package com.abhinav.view_vault.View.Vault.controllers;
 
-import com.abhinav.view_vault.View.Vault.dto.MovieDetailDto;
-import com.abhinav.view_vault.View.Vault.dto.TvDetailDto;
-import com.abhinav.view_vault.View.Vault.dto.TvInListDto;
+import com.abhinav.view_vault.View.Vault.dto.*;
 import com.abhinav.view_vault.View.Vault.services.TvService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +28,18 @@ public class TvController {
         return ResponseEntity.ok(tvService.getTvByCategory(category, timeWindow, page));
     }
     @GetMapping("/{tmdb_id}")
-    public ResponseEntity<TvDetailDto> getMovieByTmdbId(
+    public ResponseEntity<TvDetailDto> getTvByTmdbId(
             @PathVariable String tmdb_id) {
-        return ResponseEntity.ok(tvService.getMovieByTmdbId(tmdb_id));
+        return ResponseEntity.ok(tvService.getTvByTmdbId(tmdb_id));
+    }
+    @GetMapping("/{tmdb_id}/season/{season_number}")
+    public ResponseEntity<TvSeasonDetailDto> getTvSeasonByTmdbId(
+            @PathVariable String tmdb_id, @PathVariable String season_number) {
+        return ResponseEntity.ok(tvService.getSeasonDetail(tmdb_id,season_number));
+    }
+    @GetMapping("/{tmdb_id}/season/{season_number}/episode/{episode_number}")
+    public ResponseEntity<TvSeasonEpisodeDetailDto> getTvSeasonEpisodeByTmdbId(
+            @PathVariable String tmdb_id, @PathVariable String season_number, @PathVariable String episode_number) {
+        return ResponseEntity.ok(tvService.getSeasonEpisodeDetail(tmdb_id,season_number,episode_number));
     }
 }

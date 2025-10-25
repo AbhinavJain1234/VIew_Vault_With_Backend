@@ -3,7 +3,8 @@ export const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p'
 export const IMAGE_SIZES = {
   POSTER: 'w500',
   BACKDROP: 'original',
-  THUMBNAIL: 'w300'
+  THUMBNAIL: 'w300',
+  STILL: 'w300'
 } as const
 
 export const API_ENDPOINTS = {

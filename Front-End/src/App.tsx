@@ -9,6 +9,8 @@ import Anime from './pages/Anime'
 import CategoryPage from './pages/CategoryPage'
 import MovieDetailsPage from './pages/MovieDetailsPage'
 import TVDetailsPage from './pages/TVDetailsPage'
+import TVSeasonDetailsPage from './pages/TVSeasonDetailsPage'
+import TVEpisodeDetailsPage from './pages/TVEpisodeDetailsPage'
 
 export default function App() {
   return (
@@ -25,6 +27,8 @@ export default function App() {
           <Route path="/anime" element={<Anime />} />
           <Route path="/movie-details/:itemId" element={<MovieDetailsPage />} />
           <Route path="/tv-details/:itemId" element={<TVDetailsPage />} />
+          <Route path="/tv/:tvId/season/:seasonNumber" element={<TVSeasonDetailsPage />} />
+          <Route path="/tv/:tvId/season/:seasonNumber/episode/:episodeNumber" element={<TVEpisodeDetailsPage />} />
         </Routes>
 
         <Footer />

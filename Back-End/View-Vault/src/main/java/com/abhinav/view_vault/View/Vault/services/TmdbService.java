@@ -2,6 +2,7 @@ package com.abhinav.view_vault.View.Vault.services;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TmdbService {
 
     private final RestTemplate restTemplate;
@@ -32,24 +34,32 @@ public class TmdbService {
     );
 
     private String getBaseUrl() {
-        return dotenv.get("tmdb.api.base-url");
+        String base = dotenv.get("tmdb.api.base-url");
+        if (base == null || base.isBlank()) {
+            log.warn("tmdb.api.base-url is not set in .env or environment variables. Requests will fail if missing.");
+        }
+        return base;
     }
 
     private String getApiToken() {
-        return dotenv.get("tmdb.api.token");
+        String token = dotenv.get("tmdb.api.token");
+        if (token == null || token.isBlank()) {
+            log.warn("tmdb.api.token is not set in .env or environment variables. Authenticated requests may fail.");
+        }
+        return token;
     }
 
     public String getItemsByCategory(String mediaType, String category, String timeWindow, Integer page) {
         // Validate mediaType
         if (!"movie".equalsIgnoreCase(mediaType) && !"tv".equalsIgnoreCase(mediaType)) {
-            System.err.println("Invalid media type: " + mediaType + ". Must be 'movie' or 'tv'");
+            log.error("Invalid media type: {}. Must be 'movie' or 'tv'", mediaType);
             return null;
         }
 
         // Validate category based on mediaType
         List<String> validCategories = "movie".equalsIgnoreCase(mediaType) ? MOVIE_CATEGORIES : TV_CATEGORIES;
         if (!validCategories.contains(category.toLowerCase())) {
-            System.err.println("Invalid category '" + category + "' for " + mediaType + ". Valid categories: " + validCategories);
+            log.error("Invalid category '{}' for {}. Valid categories: {}", category, mediaType, validCategories);
             return null;
         }
 
@@ -57,7 +67,7 @@ public class TmdbService {
         String url;
         if ("trending".equalsIgnoreCase(category)) {
             if (timeWindow == null || timeWindow.trim().isEmpty()) {
-                System.err.println("Time window is required for trending category");
+                log.error("Time window is required for trending category");
                 return null;
             }
             url = getBaseUrl() + "/trending/" + mediaType.toLowerCase() + "/" + timeWindow + "?language=en-US";
@@ -73,7 +83,7 @@ public class TmdbService {
         if (cache.containsKey(url)) {
             return cache.get(url);
         }
-        System.out.println(url);
+        log.info("Calling TMDB URL: {}", url);
         String response = makeApiCall(url, HttpMethod.GET, null);
         if (response != null) {
             cache.put(url, response);
@@ -84,28 +94,63 @@ public class TmdbService {
     private String makeApiCall(String url, HttpMethod method, Object body) {
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + getApiToken());
+            String token = getApiToken();
+            if (token != null && !token.isBlank()) {
+                headers.set("Authorization", "Bearer " + token);
+            }
             headers.set("accept", "application/json");
             HttpEntity<Object> entity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.exchange(url, method, entity, String.class);
             return response.getBody();
         } catch (Exception e) {
-            System.err.println("Error during API call: " + e.getMessage());
+            log.error("Error during API call to {}: {}", url, e.getMessage(), e);
             return null;
         }
     }
 
     public String getItemDetailsByTmdbId(String mediaType, String tmdbId) {
         if (!"movie".equalsIgnoreCase(mediaType) && !"tv".equalsIgnoreCase(mediaType)) {
-            System.err.println("Invalid media type: " + mediaType + ". Must be 'movie' or 'tv'");
+            log.error("Invalid media type: {}. Must be 'movie' or 'tv'", mediaType);
             return null;
         }
         String url;
-        url=getBaseUrl()+"/"+mediaType.toLowerCase()+"/"+tmdbId+"?language=en-US";
+        url = getBaseUrl() + "/" + mediaType.toLowerCase() + "/" + tmdbId + "?language=en-US";
         if (cache.containsKey(url)) {
             return cache.get(url);
         }
-        System.out.println(url);
+        log.info("Calling TMDB URL: {}", url);
+        String response = makeApiCall(url, HttpMethod.GET, null);
+        if (response != null) {
+            cache.put(url, response);
+        }
+        return response;
+    }
+
+    public String getTvSeasonDetailsByTmdbId(String tmdbId, String seasonNumber) {
+        String mediaType = "tv";
+        String url;
+        // correct path: /tv/{tmdbId}/season/{seasonNumber}
+        url = getBaseUrl() + "/" + mediaType.toLowerCase() + "/" + tmdbId + "/season/" + seasonNumber + "?language=en-US";
+        if (cache.containsKey(url)) {
+            return cache.get(url);
+        }
+        log.info("Calling TMDB URL: {}", url);
+        String response = makeApiCall(url, HttpMethod.GET, null);
+        if (response != null) {
+            cache.put(url, response);
+        }
+        return response;
+    }
+
+    public String getTvSeasonEpisodeDetailsByTmdbId(String tmdbId, String seasonNumber, String episodeNumber) {
+        String mediaType = "tv";
+        String url;
+        // correct path: /tv/{tmdbId}/season/{seasonNumber}
+        url = getBaseUrl() + "/" + mediaType.toLowerCase() + "/" + tmdbId + "/season/" + seasonNumber + "/episode/" + episodeNumber + "?language=en-US";
+        if (cache.containsKey(url)) {
+            return cache.get(url);
+        }
+        log.info("Calling TMDB URL: {}", url);
         String response = makeApiCall(url, HttpMethod.GET, null);
         if (response != null) {
             cache.put(url, response);
